@@ -14,6 +14,27 @@ contract Staker {
 
   // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
   //  ( make sure to add a `Stake(address,uint256)` event and emit it for the frontend <List/> display )
+  mapping ( address => uint256 ) public balances;
+  uint256 public constant threshold = 1 ether;
+
+  // add a stake event
+  event Stake(address, uint256);
+
+
+  // Stake funds
+  function stake(uint256 amount) public payable {
+    require(balances[msg.sender] == 0, "You already have staked funds");
+   
+    // require the message value to be greater than or equal to the amount
+    require(msg.value >= amount * 10^18, "You did not send enough ether");
+
+    // increase the balance of the sender
+    balances[msg.sender] = amount;
+    
+    // emit the event
+    emit Stake(msg.sender, amount);
+
+  }
 
 
   // After some `deadline` allow anyone to call an `execute()` function
